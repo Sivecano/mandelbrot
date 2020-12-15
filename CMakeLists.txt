@@ -1,22 +1,29 @@
 cmake_minimum_required(VERSION 3.16)
-project(OGLhangman)
+project(sivegl)
 
 find_package(OpenGL REQUIRED)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_subdirectory(lib/glfw)
-include_directories(include)
+add_subdirectory(lib)
 include_directories(src)
+include_directories(lib/include)
+include_directories(lib/glfw/include)
 
-set(SOURCE_FILES
+set(glm_DIR lib/glm/cmake/glm) # if necessary
+find_package(glm REQUIRED)
+
+set(SOURCE
         main.cpp
-add_executable(${CMAKE_PROJECT_NAME} ${SOURCE_FILES})
-
-target_include_directories(Google_Tests_run PRIVATE src)
+        src/glad.c
+        src/helpers.cpp
+)
+add_executable(${CMAKE_PROJECT_NAME} ${SOURCE})
 
 # Linking GLFW and OGL
 target_link_libraries(${CMAKE_PROJECT_NAME} glfw ${GLFW_LIBRARIES} ${OPENGL_LIBRARY})
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ${GLFW_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIR})
+target_link_libraries(${CMAKE_PROJECT_NAME} glm::glm)
 
-set(WORKING_DIRECTORY ${CMAKE_HOME_DIRECTORY}/src)
+file(COPY src/shaders DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Release)
+file(COPY src/shaders DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Debug)
