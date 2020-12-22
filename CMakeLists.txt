@@ -27,3 +27,4 @@ target_link_libraries(${CMAKE_PROJECT_NAME} glm::glm)
 
 file(COPY src/shaders DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Release)
 file(COPY src/shaders DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Debug)
+file(COPY src/shaders DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
