@@ -3,10 +3,10 @@
 #include "GLFW/glfw3.h"
 #include "helpers.h"
 
-float scale = 1;
+double scale = 1;
 
-float x_off = 0;
-float y_off = 0;
+double x_off = 0;
+double y_off = 0;
 
 float ds = .01;
 float v = 0.001;
@@ -15,7 +15,7 @@ float a = 0.01;
 void zoom(GLFWwindow* window, double xoffset, double yoffset)
 {
     scale += scale *yoffset * 0.1;
-    if (scale <= 0) scale = 0.01;
+    if (scale <= 0.5) scale = 0.5;
 }
 
 void scroll(GLFWwindow* window, double xpos, double ypos)
@@ -27,7 +27,7 @@ void scroll(GLFWwindow* window, double xpos, double ypos)
         y_off += 2 *(ypos - ly) /(1080 * scale);
     }
 
-    std::cout << "pos: " << xpos << ", " << ypos << std::endl;
+    //std::cout << "pos: " << xpos << ", " << ypos << std::endl;
     lx = xpos;
     ly = ypos;
 }
@@ -105,7 +105,7 @@ int main()
     
     int scaleloc = glGetUniformLocation(shader, "scale");
     int offsetloc = glGetUniformLocation(shader, "offset");
-    glUseProgram(shader);
+    glUseProgram(shader); 
 
     
 
@@ -130,8 +130,8 @@ int main()
 
         if (scale >= 1000 || scale <= 1) dir = !dir;
 
-        glUniform1f(scaleloc, scale);
-        glUniform2f(offsetloc, x_off, y_off);
+        glUniform1d(scaleloc, scale);
+        glUniform2d(offsetloc, x_off, y_off);
 
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); 
         
@@ -139,7 +139,7 @@ int main()
         glfwPollEvents();
         //dt = glfwGetTime() - frametime;
         //std::cout << 1 / dt << "\n";
-        //std::cout << "x: " << x_off << "scale: " << scale << std::endl;
+        std::cout << "x: " << x_off << "scale: " << scale << std::endl;
         //std::cout << "render\n";
     }
 

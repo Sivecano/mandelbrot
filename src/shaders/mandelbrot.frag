@@ -1,4 +1,6 @@
 #version 460 core
+#define prec double
+#define precvec dvec2
 
 precision highp float;
 
@@ -6,9 +8,8 @@ out vec4 FragColor;
 
 in vec3 pos;
 
-uniform float scale;
-uniform vec2 offset;
-uniform vec2 center;
+uniform prec scale;
+uniform precvec offset;
 
 float QqhToRgb(float q1, float q2, float hue)
 {
@@ -48,20 +49,29 @@ vec3 HlsToRgb(float h, float l, float s)
 }
 
 void main() {
-    
-    float x0 = (pos.x / scale + 1)* 1.75 + offset.x - 2.5;
-    float y0 = pos.y / scale + offset.y;
-    float x;
-    float y;
-    const int max_i = 1000;
-    int i = 0;
-    float tempx;
+    prec x0 = pos.x;
+    prec y0 = pos.y ;
+	
+    x0 = (x0 / scale + 1);
+	x0 *= 1.75;
+	x0 += offset.x - 2.5;
+	y0 /= scale;
+	y0 += offset.y;
 
-    while(x*x + y*y < 3 && i < max_i)
+    prec x;
+    prec y;
+    const int max_i = 500;
+    int i = 0;
+    prec tempx;
+	prec x2;
+	prec y2;
+
+    while(x2 + y2 < 4 && i < max_i)
     {
-        tempx = x*x - y*y + x0;
         y = 2*x*y + y0;
-        x = tempx;
+        x = x2 - y2 + x0;
+		x2 = x*x;
+		y2 = y*y;
         i++;
     }
 
