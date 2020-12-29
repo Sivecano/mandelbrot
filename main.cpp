@@ -15,7 +15,7 @@ float a = 0.01;
 void zoom(GLFWwindow* window, double xoffset, double yoffset)
 {
     scale += scale *yoffset * 0.1;
-    if (scale <= 0) scale = 0.01;
+    if (scale <= .5) scale = 0.5;
 }
 
 void scroll(GLFWwindow* window, double xpos, double ypos)
