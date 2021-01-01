@@ -47,7 +47,7 @@ int main()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 
-    GLFWwindow* win = glfwCreateWindow(1920, 1080, "the mandelbrot set, glfwGetPrimaryMonitor(), NULL);
+    GLFWwindow* win = glfwCreateWindow(1920, 1080, "the mandelbrot set", glfwGetPrimaryMonitor(), NULL);
     if (!win)
     {
         printf("window creation failed!\n");
