@@ -61,12 +61,12 @@ void main() {
 	y /= scale;
 	y += offset.y;
 
-    const int max_i = 1000;
+    const int max_i = 500;
     int i = 0;
 	prec x2 = x*x;
 	prec y2 = y*y;
 
-    while(x2 + y2 < 10 && i < max_i)
+    while(x2 + y2 < 4 && i < max_i)
     {
         y = 2*x*y + y0;
         x = x2 - y2 + x0;
