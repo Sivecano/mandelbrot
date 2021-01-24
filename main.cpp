@@ -8,6 +8,9 @@ double scale = 1;
 double x_off = 0;
 double y_off = 0;
 
+double x_c = -.1;
+double y_c = .7;
+
 float ds = .01;
 float v = 0.001;
 float a = 0.01;
@@ -20,8 +23,15 @@ void zoom(GLFWwindow* window, double xoffset, double yoffset)
 
 void scroll(GLFWwindow* window, double xpos, double ypos)
 {
+
+
     static double lx, ly;
-    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT))
+    {
+        x_c = 2 * xpos / 1920 - 1;
+        y_c = 2 * ypos / 1080 - 1;
+    }
+    else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
     {
         x_off += 3.5 * (lx - xpos) /(1920 * scale);
         y_off += 2 *(ypos - ly) /(1080 * scale);
@@ -36,6 +46,14 @@ void close(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     if ((key == GLFW_KEY_Q || key == GLFW_KEY_ESCAPE) && action ==  GLFW_PRESS)
         glfwSetWindowShouldClose(window, GLFW_TRUE);
+
+    if ((key == GLFW_KEY_C) && (action == GLFW_PRESS))
+    {
+        std::cout << "\n\ngive a new c:\nx = ";
+        std::cin >> x_c;
+        std::cout << "y = ";
+        std::cin >> y_c;
+    }
 }
 
 int main()
@@ -47,7 +65,7 @@ int main()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 
-    GLFWwindow* win = glfwCreateWindow(1920, 1080, "the mandelbrot set", glfwGetPrimaryMonitor(), NULL);
+    GLFWwindow* win = glfwCreateWindow(1920, 1080, "julia sets", NULL, NULL);
     if (!win)
     {
         printf("window creation failed!\n");
@@ -65,7 +83,7 @@ int main()
     glfwSetScrollCallback(win, zoom);
     glfwSetKeyCallback(win, close);
 
-    unsigned int shader = shaders::shader_program("shaders/mandelbrot.vert", "shaders/mandelbrot.frag");
+    unsigned int shader = shaders::shader_program("shaders/julia.vert", "shaders/julia.frag");
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -105,6 +123,7 @@ int main()
     
     int scaleloc = glGetUniformLocation(shader, "scale");
     int offsetloc = glGetUniformLocation(shader, "offset");
+    int julialoc = glGetUniformLocation(shader, "julia");
     glUseProgram(shader); 
 
     
@@ -132,6 +151,7 @@ int main()
 
         glUniform1d(scaleloc, scale);
         glUniform2d(offsetloc, x_off, y_off);
+        glUniform2d(julialoc, x_c, y_c);
 
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); 
         
