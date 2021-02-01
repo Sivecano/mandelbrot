@@ -1,7 +1,14 @@
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb/stb_image_write.h"
 #include <iostream>
+#include <cstdint>
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 #include "helpers.h"
+
+
+const int width= 1920;
+const int height = 1080;
 
 double scale = 1;
 
@@ -11,6 +18,80 @@ double y_off = 0;
 float ds = .01;
 float v = 0.001;
 float a = 0.01;
+
+int anim_steps;
+double dx;
+double dy;
+double dscale;
+bool animating;
+
+void set_anim_goal()
+{
+    double xg, yg, sg;
+    system("mkdir anim");
+
+    std::cout << "-----------------------------\ncurrent:\n\tx:\t" << x_off << "\n\ty:\t" << y_off << "\n\tscale:\t" << scale << "\n\n";
+
+    std::cout << "x_goal: ";
+    std::cin >> xg;
+    std::cout << "y_goal: ";
+    std::cin >> yg;
+    std::cout << "size_goal: ";
+    std::cin >> sg;
+    std::cout << "number of steps: ";
+    std::cin >> anim_steps;
+    dscale = pow(sg / scale, 1./anim_steps);
+
+    dx = scale *(xg -x_off) * (1-1/dscale) / (dscale * (1-pow(1 / dscale, anim_steps)));
+    dy = scale *(yg -y_off) * (1-1/dscale) / (dscale * (1-pow(1 / dscale, anim_steps)));
+
+    animating = true;
+
+}
+
+void anim_cleanup()
+{
+    system("ffmpeg -r 24 -f image2 -s 1920x1080 -i anim/anim%d.bmp -vcodec ffv1 -crf 25  -pix_fmt yuv420p movie.mov");
+    system("rm anim/anim*");
+}
+
+void screenshot(const char* filename)
+{
+    uint8_t *pixels = new uint8_t[3*width*height];
+    glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+    stbi_write_bmp(filename, width, height, 3, pixels);
+    if (pixels) delete[] pixels;
+
+}
+
+
+void animate()
+{
+    static int anim_counter;
+    if (anim_counter < anim_steps)
+    {
+        x_off += dx / scale;
+        y_off += dy / scale;
+        scale *= dscale;
+        anim_counter++;
+        std::string file = "anim/anim";
+        file += std::to_string(anim_counter);
+        file += ".bmp";
+        std::cout << "animation " << anim_counter << "/" << anim_steps << "\t" << file << "\n";
+
+        screenshot(file.c_str());
+    }
+    else
+    {
+        if (animating)
+            anim_cleanup();
+
+        anim_counter = 0;
+        anim_steps = 0;
+        animating=false;
+    }
+
+}
 
 void zoom(GLFWwindow* window, double xoffset, double yoffset)
 {
@@ -23,8 +104,8 @@ void scroll(GLFWwindow* window, double xpos, double ypos)
     static double lx, ly;
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
     {
-        x_off += 3.5 * (lx - xpos) /(1920 * scale);
-        y_off += 2 *(ypos - ly) /(1080 * scale);
+        x_off += 3.5 * (lx - xpos) /(width * scale);
+        y_off += 2 *(ypos - ly) /(height * scale);
     }
 
     //std::cout << "pos: " << xpos << ", " << ypos << std::endl;
@@ -36,6 +117,10 @@ void close(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     if ((key == GLFW_KEY_Q || key == GLFW_KEY_ESCAPE) && action ==  GLFW_PRESS)
         glfwSetWindowShouldClose(window, GLFW_TRUE);
+    if ((key == GLFW_KEY_S) && action == GLFW_PRESS)
+        screenshot("screen.bmp");
+    if ((key == GLFW_KEY_A) && action == GLFW_PRESS)
+        set_anim_goal();
 }
 
 int main()
@@ -45,9 +130,10 @@ int main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    stbi_flip_vertically_on_write(1);
 
 
-    GLFWwindow* win = glfwCreateWindow(1920, 1080, "the mandelbrot set", glfwGetPrimaryMonitor(), NULL);
+    GLFWwindow* win = glfwCreateWindow(width, height, "the mandelbrot set", glfwGetPrimaryMonitor(), NULL);
     if (!win)
     {
         printf("window creation failed!\n");
@@ -60,6 +146,7 @@ int main()
         throw "glad died something has gone wrong check dependencies";
     }
     //glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glViewport(0, 0, width, height);
 
     glfwSetCursorPosCallback(win, scroll);
     glfwSetScrollCallback(win, zoom);
@@ -139,6 +226,7 @@ int main()
         glfwPollEvents();
         //dt = glfwGetTime() - frametime;
         //std::cout << 1 / dt << "\n";
+        animate();
         std::cout << "x: " << x_off << "scale: " << scale << std::endl;
         //std::cout << "render\n";
     }
