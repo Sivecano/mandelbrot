@@ -1,6 +1,6 @@
 # Mandelbrot set
 A simple implementation of the mandelbrot set using opengl.
-`master` contains an imlementation using `float32` allowing for less zoom while `double` contains an implementation using `float64` allowing for more zoom at the cost of performance. 
+`master` contains an imlementation using `float32` allowing for less zoom while `double` contains an implementation using `float64` allowing for more zoom at the cost of performance.`anim` is a clone of `double` where you can record videos of zoomouts and zoomins. Press `A` to open a dialog in your terminal window and simply input the coordinates and zoom factor that you'd like to go to. the video can then be found in the run directory. MAKE SURE THAT YOU HAVE PLENTY OF STORAGE LEFT. THIS PROGRAM WILL CREATE AN IMAGE FILE FOR EACH FRAME OF VIDEO AT 24fps. 
   * for mac: you may face difficulties running the `float64` version so it's best to stick to the regular version.
   * on linux: you may face weird bugs resulting from the fact that the application enters fullscreen mode. to fix this just replace `glfwGetPrimaryMonitor()` on line `50 of `main.cpp` with `NULL`.
   * on windows: **RUN IT ON A GOOD GRAPHICS CARD**, otherwise you will only get still images or no images at all.
@@ -10,7 +10,8 @@ A simple implementation of the mandelbrot set using opengl.
       * make sure to always reconfigure the cmake project to apply your changes to the shader files
 # installation
   1. make sure you have cmake as well as a c++ compiler installed
-  2. clone your prefered branch with `git clone`
-  3. get the dependencies with `git submodule init` and `git submodule update`
-  4. build using cmake
-  5. enjoy
+  2. makue sure you have ffmpeg installed
+  3. clone your prefered branch with `git clone`
+  4. get the dependencies with `git submodule init` and `git submodule update`
+  5. build using cmake
+  6. enjoy
