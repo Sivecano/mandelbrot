@@ -13,8 +13,8 @@ uniform precvec offset;
 
 float QqhToRgb(float q1, float q2, float hue)
 {
-	if (hue > 360) hue -= 360;
-	else if (hue < 0) hue += 360;
+	while (hue > 360) hue -= 360;
+	while (hue < 0) hue += 360;
 
 	if (hue < 60) return q1 + (q2 - q1) * hue / 60;
 	if (hue < 180) return q2;
@@ -66,15 +66,24 @@ void main() {
 	prec x2;
 	prec y2;
 
+	prec px;
+	prec py;
+	prec path = 0;
+
     while(x2 + y2 < 4 && i < max_i)
     {
+		px = x;
+		py = y;
         y = 2*x*y + y0;
         x = x2 - y2 + x0;
 		x2 = x*x;
 		y2 = y*y;
+
+		path += (px -x)*(px -x) + (py -y)*(py -y);
         i++;
     }
 
-    FragColor = vec4(HlsToRgb(270 *i /max_i, (i == max_i)? 0 :.5, .5), 1);
+
+    FragColor = vec4(HlsToRgb(float(path), (i == max_i)? 0 :.5, .5), 1);
     //FragColor = vec4(0., 1., 0., 1.);
 }
