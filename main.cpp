@@ -1,7 +1,11 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb/stb_image_write.h"
 #include <iostream>
+#include <sstream>
+#include <iomanip>
+#include <string>
 #include <cstdint>
+#include <limits>
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 #include "helpers.h"
@@ -30,10 +34,15 @@ double dx;
 double dy;
 double dscale;
 bool animating;
+std::string from_to;
 
 void set_anim_goal()
 {
+    std::stringstream buff;
     double xg, yg, sg;
+    buff.precision(std::numeric_limits< double >::digits10);
+    buff <<"from:\nx: ";
+    buff << x_off << "\ny: " << y_off << "\nscale: " << scale;
     system("mkdir anim");
 
     std::cout << "-----------------------------\ncurrent:\n\tx:\t" << x_off << "\n\ty:\t" << y_off << "\n\tscale:\t" << scale << "\n\n";
@@ -46,10 +55,22 @@ void set_anim_goal()
     std::cin >> sg;
     std::cout << "number of steps: ";
     std::cin >> anim_steps;
-    dscale = pow(sg / scale, 1./anim_steps);
 
-    dx = scale *(xg -x_off) * (1-1/dscale) / (dscale * (1-pow(1 / dscale, anim_steps)));
-    dy = scale *(yg -y_off) * (1-1/dscale) / (dscale * (1-pow(1 / dscale, anim_steps)));
+    buff << "\n\nto:\nx: " << xg << "\ny: " << yg << "\nsize: " << sg;
+    from_to = buff.str();
+
+    dscale = pow(sg / scale, 1./anim_steps);
+    if (dscale == 1)
+    {
+        dx = (xg -x_off) / anim_steps;
+        dy = (yg -y_off) / anim_steps;
+    }
+    else
+    {
+        dx = scale *(xg -x_off) * (1-1/dscale) / (1-pow(1 / dscale, anim_steps));
+    dy = scale *(yg -y_off) * (1-1/dscale) / (1-pow(1 / dscale, anim_steps));
+    }
+
 
     animating = true;
 
@@ -57,7 +78,7 @@ void set_anim_goal()
 
 void anim_cleanup()
 {
-    system("ffmpeg -r 24 -f image2 -s 1920x1080 -i anim/anim%d.bmp -vcodec ffv1 -crf 25  -pix_fmt yuv420p movie.mov");
+    system(("ffmpeg -r 24 -f image2 -s 1920x1080 -i anim/anim%d.bmp -vcodec libx265 -metadata author=\"Fadri Lardon\" -metadata comment=\"" +  from_to + "\"  mandelbrot.mov").c_str());
     system("rm anim/anim*");
 }
 
@@ -67,7 +88,6 @@ void screenshot(const char* filename)
     glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, pixels);
     stbi_write_bmp(filename, width, height, 3, pixels);
     if (pixels) delete[] pixels;
-
 }
 
 
@@ -184,7 +204,7 @@ void colourinit(unsigned int shader)
 
 int main()
 {
-    
+    std::cout.precision(std::numeric_limits< double >::digits10);
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
@@ -286,7 +306,7 @@ int main()
         //dt = glfwGetTime() - frametime;
         //std::cout << 1 / dt << "\n";
         animate();
-        std::cout << "x: " << x_off << "scale: " << scale << std::endl;
+        std::cout << "x: " << x_off << "\ty: " << y_off << "\tscale: " << scale << std::endl;
         //std::cout << "render\n";
     }
 
