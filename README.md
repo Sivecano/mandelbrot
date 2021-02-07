@@ -17,4 +17,4 @@ A simple implementation of the mandelbrot set using opengl.
   6. enjoy
   
 # disclaimer 
- * run at your own risk, I don't know what this might do to your computer
+**RUN AT YOUR OWN RISK ! I don't know what this might do to your computer**
