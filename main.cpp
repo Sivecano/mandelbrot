@@ -3,6 +3,9 @@
 #include "GLFW/glfw3.h"
 #include "helpers.h"
 
+const int width = 1920;
+const int height = 1080;
+
 float scale = 1;
 
 float x_off = 0;
@@ -23,8 +26,8 @@ void scroll(GLFWwindow* window, double xpos, double ypos)
     static double lx, ly;
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
     {
-        x_off += 3.5 * (lx - xpos) /(1920 * scale);
-        y_off += 2 *(ypos - ly) /(1080 * scale);
+        x_off += 3.5 * (lx - xpos) /(width * scale);
+        y_off += 2 *(ypos - ly) /(height * scale);
     }
 
     std::cout << "pos: " << xpos << ", " << ypos << std::endl;
@@ -47,7 +50,7 @@ int main()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 
-    GLFWwindow* win = glfwCreateWindow(1920, 1080, "the mandelbrot set", glfwGetPrimaryMonitor(), NULL);
+    GLFWwindow* win = glfwCreateWindow(width, height, "the mandelbrot set", glfwGetPrimaryMonitor(), NULL);
     if (!win)
     {
         printf("window creation failed!\n");
@@ -60,6 +63,7 @@ int main()
         throw "glad died something has gone wrong check dependencies";
     }
     //glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glViewport(0, 0, width, height);
 
     glfwSetCursorPosCallback(win, scroll);
     glfwSetScrollCallback(win, zoom);
