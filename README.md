@@ -15,3 +15,6 @@ A simple implementation of the mandelbrot set using opengl.
   4. get the dependencies with `git submodule init` and `git submodule update`
   5. build using cmake
   6. enjoy
+  
+# disclaimer 
+ * run at your own risk, I don't know what this might do to your computer
