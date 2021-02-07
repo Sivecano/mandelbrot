@@ -60,8 +60,9 @@ void main() {
 
     prec x;
     prec y;
-    const int max_i = 500;
+    const int max_i = 100;
     int i = 0;
+	
     prec tempx;
 	prec x2;
 	prec y2;
@@ -74,16 +75,16 @@ void main() {
     {
 		px = x;
 		py = y;
-        y = 2*x*y + y0;
-        x = x2 - y2 + x0;
+		y = 2*x*y + y0;
+		x = x2 - y2 + x0;
 		x2 = x*x;
 		y2 = y*y;
 
-		path += (px -x)*(px -x) + (py -y)*(py -y);
-        i++;
-    }
+		path += ((px -x)*(px -x) + (py -y)*(py -y));
+		i++;
+	}
 
 
-    FragColor = vec4(HlsToRgb(float(path), (i == max_i)? 0 :.5, .5), 1);
-    //FragColor = vec4(0., 1., 0., 1.);
+	FragColor = vec4(HlsToRgb(float(path) *1.5, (i == max_i)? 0 :.5, .5), 1);
+	//FragColor = vec4(0., 1., 0., 1.);
 }
