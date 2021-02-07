@@ -72,7 +72,7 @@ void set_anim_goal()
 
 void anim_cleanup()
 {
-    system(("ffmpeg -r 24 -f image2 -s 1920x1080 -i anim/anim%d.bmp -vcodec libx265 -metadata author=\"Fadri Lardon\" -metadata comment=\"" +  from_to + "\"  mandelbrot.mov").c_str());
+    system(("ffmpeg -r 24 -f image2 -s 1920x1080 -i anim/anim%d.bmp -vcodec libx265 -metadata artist=\"Sivecano\" -metadata comment=\"" +  from_to + "\"  mandelbrot.mov").c_str());
     system("rm anim/anim*");
 }
 
