@@ -10,7 +10,7 @@ A simple implementation of the mandelbrot set using opengl.
       * make sure to always reconfigure the cmake project to apply your changes to the shader files
 # installation
   1. make sure you have cmake as well as a c++ compiler installed
-  2. make sure you have ffmpeg installed
+  2. makue sure you have ffmpeg installed
   3. clone your prefered branch with `git clone`
   4. get the dependencies with `git submodule init` and `git submodule update`
   5. build using cmake

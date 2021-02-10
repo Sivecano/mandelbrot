@@ -12,9 +12,6 @@
 #include "glm/glm.hpp"
 #include <glm/gtc/type_ptr.hpp>
 
-const int width = 1920;
-const int height = 1080;
-
 
 const int width= 1920;
 const int height = 1080;
