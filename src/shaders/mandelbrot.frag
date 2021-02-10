@@ -3,6 +3,9 @@
 #define precvec dvec2
 
 precision highp float;
+const int max_i = 500;
+uniform vec3 colourmap[max_i + 1];
+
 
 out vec4 FragColor;
 
@@ -60,7 +63,6 @@ void main() {
 
     prec x;
     prec y;
-    const int max_i = 500;
     int i = 0;
     prec tempx;
 	prec x2;
@@ -75,6 +77,6 @@ void main() {
         i++;
     }
 
-    FragColor = vec4(HlsToRgb(270 *i /max_i, (i == max_i)? 0 :.5, .5), 1);
+    FragColor = vec4(/*HlsToRgb(270 *i /max_i, (i == max_i)? 0 :.5, .5)*/ colourmap[i], 1);
     //FragColor = vec4(0., 1., 0., 1.);
 }
