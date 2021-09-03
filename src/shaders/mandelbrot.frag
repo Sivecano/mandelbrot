@@ -80,7 +80,7 @@ void main() {
 		x2 = x*x;
 		y2 = y*y;
 
-		path += ((px -x)*(px -x) + (py -y)*(py -y));
+		path += sqrt((px -x)*(px -x) + (py -y)*(py -y));
 		i++;
 	}
 
